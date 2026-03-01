@@ -12,10 +12,40 @@
 </div>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title>Homework Tracker</title>
 
     <style>
+        .card {
+            width: 95%;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        button {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 20px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+        }
+
         * {
             box-sizing: border-box;
         }
@@ -377,7 +407,7 @@
     <video autoplay loop muted>
         <source src="blackhole.mp4" type="video/mp4">
     </video>
-    <audio id="bg-Music" loop>
+    <audio id="bg-music" loop preload="auto">
         <source src="VISIONSLOWED.mp3" type="audio/mp3">
     </audio>
 
@@ -386,7 +416,7 @@
         <h2 class="title">การบ้านค้าบบ</h2>
 
         <div class="input-section">
-            <button onclick="toggleMusic()">🎵 เปิด / ปิด เพลง</button>
+            <button id="musicBtn">🎵 เปิดเพลง</button>
             <input type="text" id="taskInput" placeholder="ชื่องาน">
 
             <input type="date" id="dateInput">
@@ -494,15 +524,21 @@
             localStorage.setItem("currentUser", name);
             loadTasks();
         }
-        function toggleMusic() {
-            let music = document.getElementById("bg-music");
+        const music = document.getElementById("bg-music");
+        const musicBtn = document.getElementById("musicBtn");
 
+        musicBtn.addEventListener("click", function () {
             if (music.paused) {
-                music.play();
+                music.play().then(() => {
+                    musicBtn.textContent = "🔇 ปิดเพลง";
+                }).catch(error => {
+                    console.log("Play error:", error);
+                });
             } else {
                 music.pause();
+                musicBtn.textContent = "🎵 เปิดเพลง";
             }
-        }
+        });
 
         function loadTasks() {
             if (!currentUser) return;
