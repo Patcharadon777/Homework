@@ -167,21 +167,6 @@
             object-fit: cover;
             z-index: -1;
         }
-        body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden; /* ปิดการเลื่อนแนวนอน */
-}
-
-video {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-  z-index: -1;
-}
 
         /* ทำให้พื้นหลังอ่านง่ายขึ้น */
         body::after {
@@ -368,7 +353,7 @@ video {
 
 <body>
     <video autoplay muted loop>
-        <source src="Blackhole (2).mp4" type="video/mp4">
+        <source src="blackhole.mp4" type="video/mp4">
     </video>
     <audio id="bg-music" autoplay loop>
         <source src="VISIONSLOWED.mp3" type="audio/mpeg">
@@ -427,8 +412,8 @@ video {
         let currentUser = localStorage.getItem("currentUser");
         let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
         function saveTasks() {
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-}
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
 
         window.onload = function () {
             if (currentUser) {
@@ -657,8 +642,8 @@ video {
             deleteBtn.onclick = function () {
 
                 if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบงานนี้?")) {
-                    li.remove();
                     tasks.splice(index, 1);
+                    renderTasks();
                     saveTasks();
                 }
             };
@@ -685,6 +670,4 @@ video {
 
 </body>
 
-
 </html>
-
