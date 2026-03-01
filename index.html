@@ -425,7 +425,10 @@ video {
             document.body.appendChild(modal);
         }
         let currentUser = localStorage.getItem("currentUser");
-        let tasks = [];
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
         window.onload = function () {
             if (currentUser) {
@@ -684,3 +687,4 @@ video {
 
 
 </html>
+
