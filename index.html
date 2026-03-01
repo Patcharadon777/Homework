@@ -639,10 +639,13 @@
             deleteBtn.className = "delete-btn";
 
             deleteBtn.onclick = function () {
+                console.log("กดลบแล้ว", index);
+
                 if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบงานนี้?")) {
+                    console.log("currentUser =", currentUser);
                     tasks.splice(index, 1);
                     saveTasks();
-                    loadTasks(); // ใช้อันนี้แทน renderTask()
+                    loadTasks();
                 }
             };
 
