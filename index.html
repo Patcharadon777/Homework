@@ -167,6 +167,21 @@
             object-fit: cover;
             z-index: -1;
         }
+        body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* ปิดการเลื่อนแนวนอน */
+}
+
+video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+}
 
         /* ทำให้พื้นหลังอ่านง่ายขึ้น */
         body::after {
@@ -666,5 +681,6 @@
 
 
 </body>
+
 
 </html>
