@@ -17,6 +17,26 @@
     <title>Homework Tracker</title>
 
     <style>
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+            /* ทำให้เต็มจอแบบไม่ยืด */
+            z-index: -1;
+            /* ให้อยู่หลังเนื้อหา */
+        }
+
+        @media (max-width: 768px) {
+            .bg-video {
+                object-fit: cover;
+            }
+        }
+
         .card {
             width: 95%;
             max-width: 500px;
@@ -404,7 +424,7 @@
 </head>
 
 <body>
-    <video autoplay loop muted>
+    <video autoplay loop muted playsinline class="bg-video">
         <source src="blackhole.mp4" type="video/mp4">
     </video>
     <audio id="bg-music" loop preload="auto">
