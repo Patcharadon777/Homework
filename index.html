@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Homework Tracker</title>
+
+    <style>
+        #bg-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #000000 40%, #0a0a0f 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        /* Black Hole Core */
+        .blackhole {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: black;
+            border-radius: 50%;
+            box-shadow: 0 0 80px 40px rgba(255, 255, 255, 0.05);
+            z-index: 3;
+        }
+
+        /* Accretion Disk */
+        .disk {
+            position: absolute;
+            width: 600px;
+            height: 200px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    #ff7b00,
+                    #ffffff,
+                    #ff7b00,
+                    transparent);
+            border-radius: 50%;
+            filter: blur(25px);
+            animation: rotateDisk 12s linear infinite;
+            z-index: 2;
+        }
+
+        /* Light Bending Glow */
+        .glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.4), transparent 70%);
+            filter: blur(50px);
+            z-index: 1;
+        }
+
+        @keyframes rotateDisk {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        .container {
+            position: relative;
+            z-index: 10;
+            /* ทำให้ลอยอยู่หน้าสุด */
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            border-radius: 20px;
+            width: 450px;
+            box-shadow: 0 0 40px rgba(108, 99, 255, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input,
+        button {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+        }
+
+        input[type="text"] {
+            flex: 1;
+        }
+
+        input[type="date"] {
+            background: #222;
+            color: white;
+        }
+
+        button {
+            background: #6c63ff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #5848c2;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+
+        .delete-btn {
+            background: crimson;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <video autoplay muted loop id="bg-video">
+        <source src="blackhole.mp4" type="video/mp4">
+    </video>
+
+    <audio id="bg-music" autoplay loop>
+        <source src="VISIONSLOWED.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <h1>🌌 การบ้านค้าบ</h1>
+
+        <div class="input-group">
+            <button onclick="toggleMusic()">🎵 เปิด / ปิด เพลง</button>
+            <input type="text" id="taskInput" placeholder="ชื่องาน">
+            <input type="date" id="dateInput">
+            <button onclick="addTask()">เพิ่ม</button>
+        </div>
+
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        function toggleMusic() {
+            let music = document.getElementById("bg-music");
+
+            if (music.paused) {
+                music.play();
+            } else {
+                music.pause();
+            }
+        }
+
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+        window.onload = function () {
+            tasks.forEach(task => renderTask(task));
+        };
+
+        function addTask() {
+            let text = document.getElementById("taskInput").value;
+            let date = document.getElementById("dateInput").value;
+            if (text === "") return;
+
+            let task = {
+                text: text,
+                date: date,
+                completed: false
+            };
+
+            tasks.push(task);
+            saveTasks();
+            renderTask(task);
+
+            document.getElementById("taskInput").value = "";
+            document.getElementById("dateInput").value = "";
+        }
+
+        function renderTask(task) {
+            let li = document.createElement("li");
+
+            let topDiv = document.createElement("div");
+            topDiv.className = "task-top";
+
+            let leftSide = document.createElement("div");
+
+            let span = document.createElement("span");
+            span.textContent = task.text;
+
+            if (task.completed) {
+                span.classList.add("completed");
+            }
+
+            let dateText = document.createElement("small");
+            dateText.textContent = "กำหนดส่ง: " + (task.date || "ไม่ระบุ");
+
+            leftSide.appendChild(span);
+            leftSide.appendChild(document.createElement("br"));
+            leftSide.appendChild(dateText);
+
+            let rightSide = document.createElement("div");
+
+            let checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = task.completed;
+
+            checkbox.onchange = function () {
+                task.completed = checkbox.checked;
+                span.classList.toggle("completed");
+                saveTasks();
+            };
+
+            let deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "ลบ";
+            deleteBtn.className = "delete-btn";
+
+            deleteBtn.onclick = function () {
+                tasks = tasks.filter(t => t !== task);
+                saveTasks();
+                li.remove();
+            };
+
+            rightSide.appendChild(checkbox);
+            rightSide.appendChild(deleteBtn);
+
+            topDiv.appendChild(leftSide);
+            topDiv.appendChild(rightSide);
+
+            li.appendChild(topDiv);
+            document.getElementById("taskList").appendChild(li);
+        }
+
+        function saveTasks() {
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+
+    </script>
+
+</body>
+
+</html>
