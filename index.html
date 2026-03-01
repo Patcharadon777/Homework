@@ -1,11 +1,163 @@
 <!DOCTYPE html>
 <html>
+<ul id="taskList"></ul>
+<div id="login-box">
+    <input type="text" id="usernameInput" placeholder="ตั้งชื่อผู้ใช้ของคุณ">
+    <button onclick="setUser()">เริ่มใช้งาน</button>
+</div>
+
+<div id="user-info" style="display:none;">
+    <h3 id="welcomeText"></h3>
+    <button onclick="changeUser()">เปลี่ยนผู้ใช้</button>
+</div>
 
 <head>
     <meta charset="UTF-8">
     <title>Homework Tracker</title>
 
     <style>
+        #taskList {
+            max-height: 300px;
+            /* กำหนดความสูงพื้นที่แสดงงาน */
+            overflow-y: auto;
+            /* เลื่อนแนวตั้ง */
+            overflow-x: hidden;
+            /* ปิดเลื่อนแนวนอน */
+        }
+
+        .title {
+            text-align: center;
+            color: white;
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input {
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        #taskList::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #taskList::-webkit-scrollbar-thumb {
+            background: #6a5af9;
+            border-radius: 10px;
+        }
+
+        #taskList::-webkit-scrollbar {
+            width: 24px;
+            /* ปรับตัวเลขให้ใหญ่ขึ้นได้ เช่น 16px */
+        }
+
+        #taskList::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            /* พื้นหลังรางเลื่อน */
+            border-radius: 10px;
+        }
+
+        #taskList::-webkit-scrollbar-thumb {
+            background: #6a5af9;
+            /* สีแท่งเลื่อน */
+            border-radius: 10px;
+            border: 3px solid transparent;
+            /* ทำให้ดูหนานุ่มขึ้น */
+        }
+
+        #taskList::-webkit-scrollbar-thumb:hover {
+            background: #8f7bff;
+        }
+
+        .task-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            /* ระยะห่างระหว่าง checkbox กับปุ่มลบ */
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            max-height: 80vh;
+        }
+
+        #taskList {
+            flex-grow: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #taskList {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        #taskList li {
+            width: 100%;
+        }
+
+        #taskList li {
+            width: 100%;
+        }
+
+        #taskList {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        #user-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+
+        body {
+            position: relative;
+        }
+
+        #usernameInput #usernameInput:focus {
+            box-shadow: 0 0 10px #6a00ff;
+            border-color: #6a00ff;
+        }
+
+        #login-box {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #username #username:focus {
+            width: 180px;
+            /* ความกว้าง */
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #555;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            outline: none;
+        }
+
         #bg-video {
             position: fixed;
             right: 0;
@@ -23,14 +175,12 @@
 
         body {
             margin: 0;
-            height: 100vh;
-            overflow: hidden;
-            background: radial-gradient(circle at center, #000000 40%, #0a0a0f 100%);
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: Arial, sans-serif;
-            color: white;
+            height: 100vh;
+            color: #ffffff
         }
 
         /* Black Hole Core */
@@ -79,6 +229,31 @@
 
             to {
                 transform: rotate(360deg);
+            }
+        }
+
+        .card {
+            width: 420px;
+            height: 85vh;
+            padding: 30px;
+            border-radius: 25px;
+            backdrop-filter: blur(25px);
+            background: rgba(20, 20, 30, 0.6);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
@@ -173,20 +348,116 @@
         <source src="VISIONSLOWED.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="container">
-        <h1>🌌 การบ้านค้าบ</h1>
+    <div class="card">
 
-        <div class="input-group">
+        <h2 class="title">การบ้านค้าบบ</h2>
+
+        <div class="input-section">
             <button onclick="toggleMusic()">🎵 เปิด / ปิด เพลง</button>
             <input type="text" id="taskInput" placeholder="ชื่องาน">
+
             <input type="date" id="dateInput">
-            <button onclick="addTask()">เพิ่ม</button>
+
+            <div class="file-section">
+                <input type="file" id="imageInput" multiple>
+                <button class="add-btn" onclick="addTask()">เพิ่ม</button>
+            </div>
+
         </div>
 
         <ul id="taskList"></ul>
+
     </div>
 
     <script>
+        function showImageModal(src) {
+
+            let modal = document.createElement("div");
+            modal.style.position = "fixed";
+            modal.style.top = "0";
+            modal.style.left = "0";
+            modal.style.width = "100%";
+            modal.style.height = "100%";
+            modal.style.backgroundColor = "rgba(0,0,0,0.8)";
+            modal.style.display = "flex";
+            modal.style.alignItems = "center";
+            modal.style.justifyContent = "center";
+            modal.style.zIndex = "9999";
+
+            let img = document.createElement("img");
+            img.src = src;
+            img.style.maxWidth = "90%";
+            img.style.maxHeight = "90%";
+            img.style.borderRadius = "12px";
+
+            modal.appendChild(img);
+
+            modal.onclick = function () {
+                modal.remove();
+            };
+
+            document.body.appendChild(modal);
+        }
+        let currentUser = localStorage.getItem("currentUser");
+        let tasks = [];
+
+        window.onload = function () {
+            if (currentUser) {
+                showApp();
+                loadTasks();
+            }
+        };
+
+        function setUser() {
+            let name = document.getElementById("usernameInput").value.trim();
+
+            if (name === "") {
+                alert("กรุณาตั้งชื่อก่อน");
+                return;
+            }
+
+            currentUser = name;
+            localStorage.setItem("currentUser", name);
+
+            showApp();
+            loadTasks();
+        }
+
+        function showApp() {
+            document.getElementById("login-box").style.display = "none";
+            document.getElementById("user-info").style.display = "block";
+            document.getElementById("welcomeText").innerText =
+                "🌌 ผู้ใช้: " + currentUser;
+        }
+
+        function changeUser() {
+            localStorage.removeItem("currentUser");
+            location.reload();
+        }
+        function saveUsername() {
+            let name = document.getElementById("username").value.trim();
+
+            if (name === "") {
+                alert("กรุณาใส่ชื่อก่อน");
+                return;
+            }
+
+            currentUser = name;
+            localStorage.setItem("currentUser", name);
+            loadTasks();
+        }
+        function saveUsername() {
+            let name = document.getElementById("username").value.trim();
+
+            if (name === "") {
+                alert("กรุณาใส่ชื่อก่อน");
+                return;
+            }
+
+            currentUser = name;
+            localStorage.setItem("currentUser", name);
+            loadTasks();
+        }
         function toggleMusic() {
             let music = document.getElementById("bg-music");
 
@@ -197,32 +468,81 @@
             }
         }
 
-        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        function loadTasks() {
+            if (!currentUser) return;
 
-        window.onload = function () {
-            tasks.forEach(task => renderTask(task));
-        };
+            tasks = JSON.parse(localStorage.getItem("tasks_" + currentUser)) || [];
+
+            document.getElementById("taskList").innerHTML = "";
+
+            tasks.forEach(task => {
+                let li = renderTask(task);
+                document.getElementById("taskList").appendChild(li);
+            });
+        }
 
         function addTask() {
-            let text = document.getElementById("taskInput").value;
-            let date = document.getElementById("dateInput").value;
-            if (text === "") return;
 
-            let task = {
-                text: text,
-                date: date,
-                completed: false
-            };
+            if (!currentUser) {
+                alert("กรุณาตั้งชื่อก่อน");
+                return;
+            }
 
-            tasks.push(task);
-            saveTasks();
-            renderTask(task);
+            let taskInput = document.getElementById("taskInput").value;
+            let dueDate = document.getElementById("dateInput").value;
+            let files = document.getElementById("imageInput").files;
 
-            document.getElementById("taskInput").value = "";
-            document.getElementById("dateInput").value = "";
+            if (taskInput.trim() === "") return;
+
+            let imageArray = [];
+
+            if (files.length > 0) {
+
+                let filesProcessed = 0;
+
+                for (let i = 0; i < files.length; i++) {
+
+                    let reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        imageArray.push(e.target.result);
+                        filesProcessed++;
+
+                        if (filesProcessed === files.length) {
+                            createTask(imageArray);
+                        }
+                    };
+
+                    reader.readAsDataURL(files[i]);
+                }
+
+            } else {
+                createTask([]);
+            }
+
+            function createTask(images) {
+
+                let task = {
+                    text: taskInput,
+                    completed: false,
+                    dueDate: dueDate,
+                    createdBy: currentUser,
+                    images: images
+                };
+
+                tasks.push(task);
+                saveTasks();
+
+                let li = renderTask(task);
+                document.getElementById("taskList").appendChild(li);
+
+                document.getElementById("taskInput").value = "";
+                document.getElementById("imageInput").value = "";
+            }
         }
 
         function renderTask(task) {
+
             let li = document.createElement("li");
 
             let topDiv = document.createElement("div");
@@ -230,6 +550,7 @@
 
             let leftSide = document.createElement("div");
 
+            // ข้อความงาน
             let span = document.createElement("span");
             span.textContent = task.text;
 
@@ -237,50 +558,101 @@
                 span.classList.add("completed");
             }
 
+            // วันกำหนดส่ง
             let dateText = document.createElement("small");
-            dateText.textContent = "กำหนดส่ง: " + (task.date || "ไม่ระบุ");
+            dateText.textContent = "กำหนดส่ง: " + (task.dueDate || "ไม่ระบุ");
+
+            // คนที่เพิ่ม
+            let creator = document.createElement("small");
+            creator.textContent = "👤 เพิ่มโดย: " + task.createdBy;
+            creator.style.display = "block";
+            creator.style.fontSize = "12px";
+            creator.style.opacity = "0.7";
 
             leftSide.appendChild(span);
             leftSide.appendChild(document.createElement("br"));
             leftSide.appendChild(dateText);
+            leftSide.appendChild(document.createElement("br"));
+            leftSide.appendChild(creator);
 
+            if (task.images && task.images.length > 0) {
+
+                let imgContainer = document.createElement("div");
+                imgContainer.style.display = "flex";
+                imgContainer.style.flexWrap = "wrap";
+                imgContainer.style.gap = "6px";
+                imgContainer.style.marginTop = "8px";
+
+                task.images.forEach(src => {
+
+                    let img = document.createElement("img");
+                    img.src = src;
+                    img.style.width = "80px";
+                    img.style.height = "80px";
+                    img.style.objectFit = "cover";
+                    img.style.borderRadius = "8px";
+                    img.style.cursor = "pointer";
+
+                    // 🔥 คลิกดูเต็มจอ
+                    img.onclick = function () {
+                        showImageModal(src);
+                    };
+
+                    imgContainer.appendChild(img);
+                });
+
+                leftSide.appendChild(imgContainer);
+            }
+
+            // ===== ฝั่งขวา (ปุ่มต่าง ๆ) =====
             let rightSide = document.createElement("div");
 
+
+            // ✅ ปุ่มติ๊ก
             let checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.checked = task.completed;
 
             checkbox.onchange = function () {
                 task.completed = checkbox.checked;
-                span.classList.toggle("completed");
                 saveTasks();
+                loadTasks();
             };
+
+            // ✅ ปุ่มลบ
 
             let deleteBtn = document.createElement("button");
             deleteBtn.textContent = "ลบ";
             deleteBtn.className = "delete-btn";
 
             deleteBtn.onclick = function () {
-                tasks = tasks.filter(t => t !== task);
-                saveTasks();
-                li.remove();
+
+                if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบงานนี้?")) {
+                    li.remove();
+                    tasks.splice(index, 1);
+                    saveTasks();
+                }
             };
 
             rightSide.appendChild(checkbox);
             rightSide.appendChild(deleteBtn);
 
+            // รวมซ้าย + ขวา
             topDiv.appendChild(leftSide);
             topDiv.appendChild(rightSide);
 
             li.appendChild(topDiv);
-            document.getElementById("taskList").appendChild(li);
+
+            return li;
         }
 
         function saveTasks() {
-            localStorage.setItem("tasks", JSON.stringify(tasks));
+            if (!currentUser) return;
+            localStorage.setItem("tasks_" + currentUser, JSON.stringify(tasks));
         }
 
     </script>
+
 
 </body>
 
