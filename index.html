@@ -555,7 +555,7 @@
             }
         }
 
-        function renderTask(task) {
+        function renderTask(task, index) {
 
             let li = document.createElement("li");
 
@@ -634,17 +634,18 @@
             };
 
             // ✅ ปุ่มลบ
-
             let deleteBtn = document.createElement("button");
             deleteBtn.textContent = "ลบ";
             deleteBtn.className = "delete-btn";
 
             deleteBtn.onclick = function () {
-
                 if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบงานนี้?")) {
-                    tasks.splice(index, 1);
-                    renderTasks();
+                    tasks.forEach((task, index) => {
+                        let li = renderTask(task, index);
+                        document.getElementById("taskList").appendChild(li);
+                    });
                     saveTasks();
+                    loadTasks(); // ใช้อันนี้แทน renderTask()
                 }
             };
 
