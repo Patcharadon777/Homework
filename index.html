@@ -489,8 +489,8 @@
 
             document.getElementById("taskList").innerHTML = "";
 
-            tasks.forEach(task => {
-                let li = renderTask(task);
+            tasks.forEach((task, index) => {
+                let li = renderTask(task, index);
                 document.getElementById("taskList").appendChild(li);
             });
         }
@@ -640,10 +640,7 @@
 
             deleteBtn.onclick = function () {
                 if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบงานนี้?")) {
-                    tasks.forEach((task, index) => {
-                        let li = renderTask(task, index);
-                        document.getElementById("taskList").appendChild(li);
-                    });
+                    tasks.splice(index, 1);
                     saveTasks();
                     loadTasks(); // ใช้อันนี้แทน renderTask()
                 }
