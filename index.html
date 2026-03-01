@@ -32,7 +32,7 @@
         }
 
         @media (max-width: 768px) {
-            .bg- {
+            .bg-video {
                 object-fit: cover;
             }
         }
@@ -77,7 +77,7 @@
             /* ปิดการเลื่อนแนวนอน */
         }
 
-         {
+        video {
             position: fixed;
             top: 0;
             left: 0;
@@ -229,7 +229,7 @@
             outline: none;
         }
 
-        #bg- {
+        #bg-video {
             position: fixed;
             top: 0;
             left: 0;
@@ -560,18 +560,24 @@
             }
         });
 
-        function loadTasks() {
-            if (!currentUser) return;
+        dbOnValue(dbRef(db, "tasks"), (snapshot) => {
 
-            tasks = JSON.parse(localStorage.getItem("tasks_" + currentUser)) || [];
+            const taskList = document.getElementById("taskList");
+            taskList.innerHTML = "";
 
-            document.getElementById("taskList").innerHTML = "";
+            const data = snapshot.val();
+            if (!data) return;
 
-            tasks.forEach((task, index) => {
+            Object.values(data).forEach((task, index) => {
+
+                if (task.user !== currentUser) return;
+
                 let li = renderTask(task, index);
-                document.getElementById("taskList").appendChild(li);
+                taskList.appendChild(li);
+
             });
-        }
+
+        });
 
         function addTask() {
 
@@ -614,24 +620,28 @@
 
             function createTask(images) {
 
-                let task = {
+                let taskInput = document.getElementById("taskInput").value;
+                let dueDate = document.getElementById("dateInput").value;
+
+                dbPush(dbRef(db, "tasks"), {
                     text: taskInput,
-                    completed: false,
-                    dueDate: dueDate,
-                    createdBy: currentUser,
-                    images: images
-                };
+                    date: dueDate,
+                    images: images,
+                    user: currentUser
+                });
 
-                tasks.push(task);
-                saveTasks();
-
-                let li = renderTask(task);
-                document.getElementById("taskList").appendChild(li);
-
-                document.getElementById("taskInput").value = "";
-                document.getElementById("imageInput").value = "";
             }
+
+            tasks.push(task);
+            saveTasks();
+
+            let li = renderTask(task);
+            document.getElementById("taskList").appendChild(li);
+
+            document.getElementById("taskInput").value = "";
+            document.getElementById("imageInput").value = "";
         }
+
 
         function renderTask(task, index) {
 
@@ -745,9 +755,32 @@
         }
 
     </script>
+    <script type="module">
 
+        import { initializeApp } from "firebase/app";
+        import { getAnalytics } from "firebase/analytics";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXcMead5BPSjbPorQ1jvhVqrK0h7r2Hxg",
+            authDomain: "dxnz-f64ac.firebaseapp.com",
+            databaseURL: "https://dxnz-f64ac-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "dxnz-f64ac",
+            storageBucket: "dxnz-f64ac.firebasestorage.app",
+            messagingSenderId: "983256071502",
+            appId: "1:983256071502:web:c5356cc2b2111b5263f21f",
+            measurementId: "G-V692SPV400"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        // ทำให้เรียกใช้ข้างนอกได้
+        window.db = database;
+        window.dbRef = ref;
+        window.dbPush = push;
+        window.dbOnValue = onValue;
+    </script>
 
 </body>
-
 
 </html>
